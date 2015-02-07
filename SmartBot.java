@@ -11,7 +11,7 @@ public class SmartBot {
     public void run() {
         String input = "";
         while(true) {
-            input = c.hear();
+            input = c.listen();
             c.say(input);
         }
     }

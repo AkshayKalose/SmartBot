@@ -13,19 +13,19 @@ public class Communication {
      */
     final int MINTIME = 1;
     
-    long hearTime = 0;
+    long listenTime = 0;
     
     public static Scanner input;
     
-    public String hear() {
+    public String listen() {
         input = new Scanner(System.in);
         System.out.println("\nYour Message:");
         String message = input.nextLine();
-        hearTime = System.currentTimeMillis();
+        listenTime = System.currentTimeMillis();
         return message;
     }
     public void say(String s) {
-        while (System.currentTimeMillis() < hearTime + MINTIME*1000) {
+        while (System.currentTimeMillis() < listenTime + MINTIME*1000) {
             // Loop infintely until MINTIME second(s) have passed.
         }
         System.out.println("\nResponse:\n" + s);
