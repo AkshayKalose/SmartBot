@@ -1,0 +1,9 @@
+// PHP Associative Array of what we want the relations HashMap in the Memory to look like.
+'I' => array(
+    'like' => array(
+        'pokemon',
+        'playing games',
+        'eating pizza'
+    )    
+);
+...
