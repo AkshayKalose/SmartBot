@@ -2,6 +2,10 @@ import java.util.Scanner;
 
 public class Communication {
     
+    SmartBot b;
+    Memory m;
+    Logic l;
+    
     /**
      * Maximum time in seconds to come up with answer or "I don't know".
      * Like real life when you dont know what someone mreans.
@@ -17,7 +21,11 @@ public class Communication {
     
     public static Scanner input;
     
-    public Communication() {
+    public Communication(SmartBot bot, Memory mem, Logic log) {
+        b = bot;
+        m = mem;
+        l = log;
+        
         input = new Scanner(System.in);
     }
     
