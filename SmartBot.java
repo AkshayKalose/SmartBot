@@ -15,7 +15,6 @@ public class SmartBot {
         while(true) {
             input = c.listen();
             l.interpret(input);
-            c.say(input);
         }
     }
     
