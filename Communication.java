@@ -17,7 +17,7 @@ public class Communication {
      */
     final int MINTIME = 1;
     
-    long listenTime = 0;
+    long lastExchange = 0;
     
     public static Scanner input;
     
@@ -32,13 +32,14 @@ public class Communication {
     public String listen() {
         System.out.println("\nYour Message:");
         String message = input.nextLine();
-        listenTime = System.currentTimeMillis();
+        lastExchange = System.currentTimeMillis();
         return message;
     }
     public void say(String s) {
-        while (System.currentTimeMillis() < listenTime + MINTIME*1000) {
+        while (System.currentTimeMillis() < lastExchange + MINTIME*1000) {
             // Loop infintely until MINTIME second(s) have passed.
         }
+        lastExchange = System.currentTimeMillis();
         System.out.println("\nResponse:\n" + s);
     }
 }
