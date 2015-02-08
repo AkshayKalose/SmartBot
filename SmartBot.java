@@ -20,7 +20,7 @@ public class SmartBot {
     
     public void sleep() {
         c.say("Going to sleep...");
-        m.transferFromTempToPerm();
+        m.transferFromTempToPermRelations();
         c.say("Good morning!");
     }
     

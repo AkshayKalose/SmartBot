@@ -1,3 +1,4 @@
+import java.lang.String;
 import java.util.HashMap;
 import java.util.ArrayList;
 
@@ -7,7 +8,7 @@ public class Memory {
     Communication c;
     Logic l;
     
-    // Permanent memory to implement in database or DaaS like Orchestrate.
+    // Temporary memory of the last messages sent by the user.
     String[] tempLog = new String[100];
     
     // First dimension = Subject, 2nd = Action, 3rd[0] = Object, 3rd[1] = Cponfidence, 3rd[2] = Importance
@@ -52,6 +53,8 @@ public class Memory {
         tempRelations.get("Chaitya").put("is", new ArrayList<String[]>());
         String[] temp1 = {"cool", ".7", ".75"};
         tempRelations.get("Chaitya").get("is").add(temp1);
+        alterRelationConfidence("Chaitya", "is", "cool", 0.5, true);
+        alterRelationImportance("Chaitya", "is", "cool", 0.6, true);
         //GET VALUE
         //tempRelations.get("Akshay").get("is")[0];
         for(int i = 0; i < 100; i++)
@@ -66,15 +69,16 @@ public class Memory {
      * Loops through all of the relations that it has formed during the day and stores them permanently if
      * the importance is greater than .5
      */
-    public void transferFromTempToPerm() {
+    public void transferFromTempToPermRelations() {
         for(String key1 : tempRelations.keySet()) {
             for(String key2 : tempRelations.get(key1).keySet()) {
                 for(String[] key3 : tempRelations.get(key1).get(key2)) {
                     if(Double.parseDouble(key3[2]) > .5) {
-                        relations.put(key1, new HashMap<String, ArrayList<String[]>>());
-                        relations.get(key1).put(key2, new ArrayList<String[]>());
-                        String[] key3Copy = {key3[0], key3[1], key3[2]};
-                        relations.get(key1).get(key2).add(key3Copy);
+                        //relations.put(key1, new HashMap<String, ArrayList<String[]>>());
+                        //relations.get(key1).put(key2, new ArrayList<String[]>());
+                        //String[] key3Copy = {key3[0], key3[1], key3[2]};
+                        //relations.get(key1).get(key2).add(key3Copy);
+                        addNewRelation(key1, key2, key3[0], Double.parseDouble(key3[1]), Double.parseDouble(key3[2]), false);
                     }
                 }
             }
@@ -91,6 +95,17 @@ public class Memory {
                 
     }
     
+    public void addNewRelation(String key1, String key2, String value, double confidence, double importance, boolean temp) {
+        HashMap<String, HashMap<String, ArrayList<String[]>>> data = temp ? tempRelations : relations;
+        if (!data.containsKey(key1) || !(data.get(key1) instanceof HashMap)) {
+            data.put(key1, new HashMap<String, ArrayList<String[]>>());
+        }
+        if (!data.get(key1).containsKey(key2) || !(data.get(key1).get(key2) instanceof ArrayList)) {
+            data.get(key1).put(key2, new ArrayList<String[]>());
+        }
+        String[] values = {value, String.valueOf(confidence), String.valueOf(importance)};
+        data.get(key1).get(key2).add(values);
+    }
     
     /**
      * Add the latest message input to log.
@@ -100,6 +115,36 @@ public class Memory {
             tempLog[i] = tempLog[i - 1];
         }
         tempLog[0] = s;
+    }
+    
+    public boolean alterRelationConfidence(String key1, String key2, String value, double confidence, boolean temp) {
+        HashMap<String, HashMap<String, ArrayList<String[]>>> data = temp ? tempRelations : relations;
+        ArrayList<String[]> list = data.get(key1).get(key2);
+        for (int i = list.size() - 1; i > -1; i--) {
+            if((list.get(i)[0]).equals(value)) {
+                String[] tempArray = list.get(i);
+                tempArray[1] = String.valueOf(confidence);
+                list.remove(i);
+                list.add(i, tempArray);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean alterRelationImportance(String key1, String key2, String value, double importance, boolean temp) {
+        HashMap<String, HashMap<String, ArrayList<String[]>>> data = temp ? tempRelations : relations;
+        ArrayList<String[]> list = data.get(key1).get(key2);
+        for (int i = list.size() - 1; i > -1; i--) {
+            if((list.get(i)[0]).equals(value)) {
+                String[] tempArray = list.get(i);
+                tempArray[2] = String.valueOf(importance);
+                list.remove(i);
+                list.add(i, tempArray);
+                return true;
+            }
+        }
+        return false;
     }
     
     /*public TYPE findRelation() {
