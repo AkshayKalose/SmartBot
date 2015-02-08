@@ -17,8 +17,11 @@ public class Communication {
     
     public static Scanner input;
     
-    public String listen() {
+    public Communication() {
         input = new Scanner(System.in);
+    }
+    
+    public String listen() {
         System.out.println("\nYour Message:");
         String message = input.nextLine();
         listenTime = System.currentTimeMillis();
