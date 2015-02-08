@@ -52,6 +52,12 @@ public class Logic {
     public void interpretAsDebugCommand(String s) {
         if (s.contains("sleep")) {
             b.sleep();
+        } else if (s.contains("log")) {
+            c.say(m.tempLogToString());
+        } else if (s.contains("temporary relations")) {
+            c.say(m.relationsToString(true));
+        } else if (s.contains("relations")) {
+            c.say(m.relationsToString(false));
         }
     }
     

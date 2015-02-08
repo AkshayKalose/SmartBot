@@ -79,14 +79,6 @@ public class Memory {
                 }
             }
         }
-        //Prints out the permanent memory
-        /*for(String key1 : relations.keySet()) {
-            for(String key2 : relations.get(key1).keySet()) {
-                for(String[] key3 : relations.get(key1).get(key2)) {
-                   System.out.println(key1 + " " + key2 + " " + key3[0]);
-               }
-            }
-        }*/
     }
     
     public double getImportance(String key1, String key2, String key3) {
@@ -113,4 +105,25 @@ public class Memory {
     /*public TYPE findRelation() {
         // return relation value;
     }*/
+    
+    public String tempLogToString() {
+        String result = "";
+        for (int i = tempLog.length - 1; i > -1; i--) {
+            if (!tempLog[i].equals("")) result += tempLog[i] + "\n";
+        }
+        return result;
+    }
+    
+    public String relationsToString(boolean temp) {
+        String result = "";
+        HashMap<String, HashMap<String, ArrayList<String[]>>> data = temp ? tempRelations : relations;
+        for(String key1 : data.keySet()) {
+            for(String key2 : data.get(key1).keySet()) {
+                for(String[] key3 : data.get(key1).get(key2)) {
+                   result += key1 + "\t" + key2 + "\t" + key3[0] + "\t" + "Confidence: " + key3[1] + "\t" + "Importance: " + key3[2] + "\n";
+               }
+            }
+        }
+        return result;
+    }
 }
