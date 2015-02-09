@@ -1,3 +1,5 @@
+# Created collaboratively by Akshay Kalose and Chaitya Shah using Cloud9
+
 Feature list
 ===================
 - 100 index RAM (Can be replaced as new information is added that isn't permanent)
@@ -7,23 +9,19 @@ Feature list
 - Maximum Time Before Response
 
 Classes
-====================
+==================
 
 SmartBot
 -------
-Contains main bot and controls input/output.(or should we have another class to do IO?)
+Runs all the components of the bot.
 
 Memory
 ------
-Stores temporary memory and permanent memory (merge relations class into memory for relations?)
-
-Emotions(better word?)(Maybe just Happiness Level? 0 - 100)
--------
-Holds emotion level and determines if message is positive or negative from API?
+Stores and manages temporary memory and permanent memory.
 
 Trust
 -------
-Determines trust of user(or merge emotion and this class into one main "SOME WORD" class)
+Determines trust of user.
 
 Communication
 -------------
@@ -52,7 +50,3 @@ in the map, it will take the word connecting those two and add it to the delimit
 This way, it can "learn" when new delimiters are being used. If the sentence only contains
 knowledge that the bot does not have yet, it will respond, that it does not know enough to understand
 the message. 
-
-*Delete this from readme*
-Perhaps we can have a feature that shows the delimiters that the bot knows? That way users can find out what
-words to use to teach the bot new things.
