@@ -22,6 +22,23 @@ public class Memory {
      */
     private ArrayList<String> delimeters = new ArrayList<String>();
     
+    /**
+     * Minimum Importance of a Relation to Transfer to Permanent Memory.
+     */
+    final double IMPORTANCE_THRESHOLD = 0.5;
+    
+    /**
+     * Amount the importance of a relation decreases every sleep in temporary memory.
+     */
+    final double IMPORTANCE_DECREMENT_TEMP = 0.1;
+    
+    /**
+     * Amount the importance of a relation decreases every sleep in permanent memory.
+     */
+    final double IMPORTANCE_DECREMENT_PERM = 0.01;
+    
+    
+    
     public Memory(SmartBot bot, Communication com, Logic log) {
         b = bot;
         c = com;
@@ -67,18 +84,56 @@ public class Memory {
     
     /**
      * Loops through all of the relations that it has formed during the day and stores them permanently if
-     * the importance is greater than .5
+     * the importance is greater than IMPORTANCE_THRESHOLD
      */
-    public void transferFromTempToPermRelations() {
+    public ArrayList<String[]> transferFromTempToPermRelations() {
+        ArrayList<String[]> result = new ArrayList<String[]>();
         for(String key1 : tempRelations.keySet()) {
             for(String key2 : tempRelations.get(key1).keySet()) {
                 for(String[] key3 : tempRelations.get(key1).get(key2)) {
-                    if(Double.parseDouble(key3[2]) > .5) {
+                    if(Double.parseDouble(key3[2]) > IMPORTANCE_THRESHOLD) {
                         //relations.put(key1, new HashMap<String, ArrayList<String[]>>());
                         //relations.get(key1).put(key2, new ArrayList<String[]>());
                         //String[] key3Copy = {key3[0], key3[1], key3[2]};
                         //relations.get(key1).get(key2).add(key3Copy);
                         addNewRelation(key1, key2, key3[0], Double.parseDouble(key3[1]), Double.parseDouble(key3[2]), false);
+                        String[] addToResult = {key1, key2, key3[0]};
+                        result.add(addToResult);
+                    }
+                }
+            }
+        }
+        return result;
+    }
+    
+    public void reduceRelationImportance() {
+        for(String key1 : tempRelations.keySet()) {
+            for(String key2 : tempRelations.get(key1).keySet()) {
+                for(String[] key3 : tempRelations.get(key1).get(key2)) {
+                    double toDecrement = Double.parseDouble(key3[2]);
+                    key3[2] = String.valueOf(toDecrement - IMPORTANCE_DECREMENT_TEMP);
+                }
+            }
+        }
+        for(String key1 : relations.keySet()) {
+            for(String key2 : relations.get(key1).keySet()) {
+                for(String[] key3 : relations.get(key1).get(key2)) {
+                    double toDecrement = Double.parseDouble(key3[2]);
+                    key3[2] = String.valueOf(toDecrement - IMPORTANCE_DECREMENT_PERM);
+                }
+            }
+        }
+    }
+    
+    public void removeTempRelations(ArrayList<String[]> list) {
+        for(String key1 : tempRelations.keySet()) {
+            for(String key2 : tempRelations.get(key1).keySet()) {
+                ArrayList<String[]> list2 = tempRelations.get(key1).get(key2);
+                for(int i = list2.size() - 1; i > -1; i--) {
+                    for(int y = list.size() - 1; i > -1; i--) {
+                        if (key1.equals((list.get(y))[0]) && key2.equals((list.get(y))[1]) && ((list2.get(i))[0]).equals((list.get(y))[2])) {
+                            list2.remove(i);
+                        }
                     }
                 }
             }
@@ -93,6 +148,16 @@ public class Memory {
                 index = i;
         return Double.parseDouble(list.get(index)[2]);
                 
+    }
+    
+    public ArrayList<String[]> getRelations(String key1, String key2) {
+        if (relations.containsKey(key1) && relations.get(key1).containsKey(key2)) {
+            return relations.get(key1).get(key2);
+        } else if (tempRelations.containsKey(key1) && tempRelations.get(key1).containsKey(key2)) {
+            return tempRelations.get(key1).get(key2);
+        } else {
+            return null;
+        }
     }
     
     public void addNewRelation(String key1, String key2, String value, double confidence, double importance, boolean temp) {
@@ -150,6 +215,12 @@ public class Memory {
     /*public TYPE findRelation() {
         // return relation value;
     }*/
+    
+    public void sleep() {
+        ArrayList<String[]> list = transferFromTempToPermRelations();
+        reduceRelationImportance();
+        removeTempRelations(list);
+    }
     
     public String tempLogToString() {
         String result = "";

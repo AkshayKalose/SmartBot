@@ -1,3 +1,7 @@
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Logic {
 
     SmartBot b;
@@ -28,12 +32,51 @@ public class Logic {
         m.appendTempLog(s);
         
         if (isQuestion(s)) {
-            
+            Pattern pattern;
+            Matcher matcher;
+            for(String delimiter : m.getDelimeters()) {
+                pattern = Pattern.compile(delimiter + " (.*)\\?");
+                matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    ArrayList<String[]> relations = m.getRelations(matcher.group(1), delimiter);
+                    if (relations != null) {
+                        c.say((getHighestConfidenceRelation(relations))[0]);
+                    } else {
+                        c.say("I don't know.");
+                    }
+                    return;
+                }
+            }
         } else if (isExclamation(s)) {
-            // something dramatic to affect emotion?
+            Pattern pattern;
+            Matcher matcher;
+            for(String delimiter : m.getDelimeters()) {
+                pattern = Pattern.compile("(.*) " + delimiter + " ([a-zA-Z1-9]*)\\.?");
+                matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    m.addNewRelation(matcher.group(1), delimiter, matcher.group(2), trust, 0.7, true);
+                    //c.say((getHighestConfidenceRelation(m.getRelations(matcher.group(1), delimiter)))[0]);
+                    c.say(s);
+                    return;
+                }
+            }
         } else {
-            
+            // Treat as a Statement.
+            Pattern pattern;
+            Matcher matcher;
+            for(String delimiter : m.getDelimeters()) {
+                pattern = Pattern.compile("(.*) " + delimiter + " ([a-zA-Z1-9]*)\\.?");
+                matcher = pattern.matcher(s);
+                if (matcher.find()) {
+                    m.addNewRelation(matcher.group(1), delimiter, matcher.group(2), trust, 0.5, true);
+                    //c.say((getHighestConfidenceRelation(m.getRelations(matcher.group(1), delimiter)))[0]);
+                    c.say(s);
+                    return;
+                }
+            }
         }
+        // Imitate/Mimick user input if it does not understand.
+        c.say(s);
     }
     
     public static boolean isQuestion(String s) {
@@ -59,6 +102,16 @@ public class Logic {
         } else if (s.contains("relations")) {
             c.say(m.relationsToString(false));
         }
+    }
+    
+    public String[] getHighestConfidenceRelation(ArrayList<String[]> list) {
+        String[] result = list.get(0);
+        for (int i = 1; i < list.size(); i++) {
+            if (Double.parseDouble((list.get(i))[1]) > Double.parseDouble(result[1])) {
+                result = list.get(i);
+            }
+        }
+        return result;
     }
     
     public static int levenshtein_distance(String a, String b) {
