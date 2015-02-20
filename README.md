@@ -19,13 +19,13 @@ Memory
 ------
 Stores and manages temporary memory and permanent memory.
 
-Trust
--------
-Determines trust of user.
-
 Communication
 -------------
 Handles IO.
+
+Logic
+------
+Handles the logic behind the bot's memory and user input.
 
 Relations
 ===================
@@ -40,7 +40,8 @@ If you later tell the bot "I love berries" It would respond with something like 
 If you challenge the bot and say "No, berries are great!", the bot would trust you less and ignore your claim/association.
 
 So, based on this: In the code, the map will contain associations in this format:
-<item, definition>
+
+< item, definition >
 
 If we come across a new delimiter that isn't added yet, such as "like", the bot will recognize it.
 For example: "I like berries"
