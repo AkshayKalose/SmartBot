@@ -1,4 +1,7 @@
-# Created collaboratively by Akshay Kalose and Chaitya Shah using Cloud9
+# SmartBot
+---
+Created collaboratively by Akshay Kalose and Chaitya Shah using Cloud9 during HSHacks Ⅱ.
+[Project on ChallengePost](http://challengepost.com/software/smartbot)
 
 Feature list
 ===================
